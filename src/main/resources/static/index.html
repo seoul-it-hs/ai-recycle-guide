@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>AI 분리배출 비서</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<main class="page">
+		<section class="app-card">
+			<header class="app-header">
+				<p class="eyebrow">인공지능 이미지 분석</p>
+				<h1>AI 분리배출 비서</h1>
+				<p class="description">물건 사진을 올리면 AI가 분리배출 방법을 한국어로 안내합니다.</p>
+			</header>
+
+			<form id="analyzeForm" class="upload-form">
+				<label class="file-label" for="imageInput">
+					<span>이미지 선택</span>
+					<input id="imageInput" name="file" type="file" accept="image/*">
+				</label>
+
+				<div class="preview-area">
+					<img id="previewImage" class="preview-image" alt="선택한 이미지 미리보기">
+					<p id="previewPlaceholder" class="preview-placeholder">선택한 이미지가 여기에 표시됩니다.</p>
+				</div>
+
+				<button id="analyzeButton" class="analyze-button" type="submit">분석하기</button>
+			</form>
+
+			<p id="loadingMessage" class="loading-message" hidden>이미지를 분석하는 중입니다...</p>
+			<p id="errorMessage" class="error-message" hidden></p>
+
+			<section id="resultArea" class="result-area" hidden>
+				<h2>분석 결과</h2>
+				<dl class="result-list">
+					<div>
+						<dt>물건 이름</dt>
+						<dd id="itemName"></dd>
+					</div>
+					<div>
+						<dt>분리배출 종류</dt>
+						<dd id="category"></dd>
+					</div>
+					<div>
+						<dt>배출 방법</dt>
+						<dd id="guide"></dd>
+					</div>
+					<div>
+						<dt>주의 사항</dt>
+						<dd id="caution"></dd>
+					</div>
+				</dl>
+			</section>
+		</section>
+	</main>
+
+	<script src="app.js"></script>
+</body>
+</html>
