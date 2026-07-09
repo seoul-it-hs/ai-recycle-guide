@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
+// @Service는 이 클래스가 비즈니스 로직을 담당하는 Spring Bean임을 뜻한다.
 @Service
 public class GeminiRecyclingAnalysisService implements RecyclingAnalysisService {
 
@@ -24,6 +25,7 @@ public class GeminiRecyclingAnalysisService implements RecyclingAnalysisService 
 
 	public GeminiRecyclingAnalysisService(
 			ObjectMapper objectMapper,
+			// @Value는 application.properties의 설정값을 생성자 매개변수로 주입한다.
 			@Value("${gemini.api-key:}") String apiKey,
 			@Value("${gemini.model:gemini-2.5-flash}") String model
 	) {
@@ -34,6 +36,7 @@ public class GeminiRecyclingAnalysisService implements RecyclingAnalysisService 
 
 	@Override
 	public RecyclingAnalysis analyze(MultipartFile file) {
+		// 이미지 파일과 API Key를 먼저 확인한 뒤, Gemini에 보낼 요청 데이터를 만든다.
 		validateFile(file);
 		validateApiKey();
 
@@ -45,6 +48,7 @@ public class GeminiRecyclingAnalysisService implements RecyclingAnalysisService 
 				Part.fromBytes(imageBytes, contentType)
 		);
 
+		// Gemini가 설명 문장 대신 JSON만 반환하도록 응답 형식을 지정한다.
 		GenerateContentConfig config = GenerateContentConfig.builder()
 				.responseMimeType("application/json")
 				.candidateCount(1)
@@ -89,6 +93,7 @@ public class GeminiRecyclingAnalysisService implements RecyclingAnalysisService 
 		}
 
 		try {
+			// ObjectMapper는 JSON 문자열을 Java 객체로 바꿔주는 Jackson의 도구다.
 			GeminiAnalysisResponseDto responseDto = objectMapper.readValue(responseText, GeminiAnalysisResponseDto.class);
 			return responseDto.toDomain();
 		} catch (JacksonException e) {

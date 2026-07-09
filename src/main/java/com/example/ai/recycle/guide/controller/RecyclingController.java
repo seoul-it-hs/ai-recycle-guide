@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+// @RestController는 이 클래스가 HTTP 요청을 받아 JSON 응답을 돌려주는 컨트롤러임을 뜻한다.
 @RestController
 @RequestMapping("/api")
 public class RecyclingController {
@@ -25,6 +26,8 @@ public class RecyclingController {
 
 	@PostMapping(path = "/analyze", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public RecyclingAnalysisResponseDto analyze(@RequestParam("file") MultipartFile file) {
+		// MultipartFile은 브라우저가 업로드한 이미지 파일을 Spring이 담아주는 객체다.
+		// 컨트롤러는 요청을 받고, 실제 분석 작업은 서비스에게 맡긴다.
 		RecyclingAnalysis analysis = recyclingAnalysisService.analyze(file);
 		return RecyclingAnalysisResponseDto.from(analysis);
 	}

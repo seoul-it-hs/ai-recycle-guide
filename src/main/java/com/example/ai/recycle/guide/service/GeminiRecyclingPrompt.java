@@ -1,11 +1,13 @@
 package com.example.ai.recycle.guide.service;
 
+// Gemini에게 어떤 역할을 맡길지, 어떤 JSON 형식으로 답해야 할지 알려주는 프롬프트다.
 public class GeminiRecyclingPrompt {
 
 	private GeminiRecyclingPrompt() {
 	}
 
 	public static String text() {
+		// AI 응답은 자유로운 문장보다 정해진 JSON 형식이 서버에서 처리하기 쉽다.
 		return """
 				너는 한국의 분리배출 안내 도우미다.
 				이미지를 보고 물건이 무엇인지 추정하고,
