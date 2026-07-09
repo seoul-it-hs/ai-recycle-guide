@@ -26,14 +26,15 @@
 					<p id="previewPlaceholder" class="preview-placeholder">선택한 이미지가 여기에 표시됩니다.</p>
 				</div>
 
-				<button id="analyzeButton" class="analyze-button" type="submit">분석하기</button>
+				<button id="analyzeButton" class="analyze-button" type="submit" disabled>분석하기</button>
 			</form>
 
-			<p id="loadingMessage" class="loading-message" hidden>이미지를 분석하는 중입니다...</p>
-			<p id="errorMessage" class="error-message" hidden></p>
+			<p id="loadingMessage" class="loading-message" role="status" hidden>이미지를 분석하는 중입니다...</p>
+			<p id="errorMessage" class="error-message" role="alert" hidden></p>
 
 			<section id="resultArea" class="result-area" hidden>
 				<h2>분석 결과</h2>
+				<!-- 분석 결과를 항목 이름과 내용의 쌍으로 보여준다. -->
 				<dl class="result-list">
 					<div>
 						<dt>물건 이름</dt>

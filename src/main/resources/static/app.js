@@ -12,6 +12,9 @@ const category = document.getElementById('category');
 const guide = document.getElementById('guide');
 const caution = document.getElementById('caution');
 
+let previewImageUrl = '';
+
+// change 이벤트는 서버로 보내기 전에 선택한 이미지를 화면에서 미리 보여준다.
 imageInput.addEventListener('change', () => {
 	const file = imageInput.files[0];
 
@@ -20,20 +23,22 @@ imageInput.addEventListener('change', () => {
 
 	if (!file) {
 		clearPreview();
+		setAnalyzeButtonEnabled(false);
 		return;
 	}
 
-	if (!file.type.startsWith('image/')) {
+	if (!isImageFile(file)) {
 		clearPreview();
+		setAnalyzeButtonEnabled(false);
 		showError('이미지 파일만 선택할 수 있습니다.');
 		return;
 	}
 
-	previewImage.src = URL.createObjectURL(file);
-	previewImage.classList.add('is-visible');
-	previewPlaceholder.hidden = true;
+	showPreview(file);
+	setAnalyzeButtonEnabled(true);
 });
 
+// submit 이벤트는 선택한 이미지를 Spring Boot 서버로 보내고 분석 결과를 받는다.
 analyzeForm.addEventListener('submit', async (event) => {
 	event.preventDefault();
 
@@ -47,28 +52,15 @@ analyzeForm.addEventListener('submit', async (event) => {
 		return;
 	}
 
-	if (!file.type.startsWith('image/')) {
+	if (!isImageFile(file)) {
 		showError('이미지 파일만 업로드할 수 있습니다.');
 		return;
 	}
 
-	const formData = new FormData();
-	formData.append('file', file);
-
 	setLoading(true);
 
 	try {
-		const response = await fetch('/api/analyze', {
-			method: 'POST',
-			body: formData
-		});
-
-		if (!response.ok) {
-			const message = await response.text();
-			throw new Error(message || '분석 요청에 실패했습니다.');
-		}
-
-		const result = await response.json();
+		const result = await requestAnalysis(file);
 		renderResult(result);
 	} catch (error) {
 		showError(error.message);
@@ -77,7 +69,24 @@ analyzeForm.addEventListener('submit', async (event) => {
 	}
 });
 
+function isImageFile(file) {
+	return file.type.startsWith('image/');
+}
+
+function showPreview(file) {
+	clearPreview();
+	previewImageUrl = URL.createObjectURL(file);
+	previewImage.src = previewImageUrl;
+	previewImage.classList.add('is-visible');
+	previewPlaceholder.hidden = true;
+}
+
 function clearPreview() {
+	if (previewImageUrl) {
+		URL.revokeObjectURL(previewImageUrl);
+		previewImageUrl = '';
+	}
+
 	previewImage.removeAttribute('src');
 	previewImage.classList.remove('is-visible');
 	previewPlaceholder.hidden = false;
@@ -91,8 +100,13 @@ function clearMessages() {
 
 function setLoading(isLoading) {
 	loadingMessage.hidden = !isLoading;
-	analyzeButton.disabled = isLoading;
+	imageInput.disabled = isLoading;
+	setAnalyzeButtonEnabled(!isLoading);
 	analyzeButton.textContent = isLoading ? '분석 중...' : '분석하기';
+}
+
+function setAnalyzeButtonEnabled(isEnabled) {
+	analyzeButton.disabled = !isEnabled;
 }
 
 function showError(message) {
@@ -106,6 +120,26 @@ function hideResult() {
 	category.textContent = '';
 	guide.textContent = '';
 	caution.textContent = '';
+}
+
+async function requestAnalysis(file) {
+	const response = await fetch('/api/analyze', {
+		method: 'POST',
+		body: createImageFormData(file)
+	});
+
+	if (!response.ok) {
+		const message = await response.text();
+		throw new Error(message || '분석 요청에 실패했습니다.');
+	}
+
+	return response.json();
+}
+
+function createImageFormData(file) {
+	const formData = new FormData();
+	formData.append('file', file);
+	return formData;
 }
 
 function renderResult(result) {

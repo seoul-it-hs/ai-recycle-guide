@@ -69,6 +69,7 @@ h1 {
 }
 
 .file-label input {
+	/* 기본 파일 선택 input은 숨기고, label을 버튼처럼 보이게 만든다. */
 	position: absolute;
 	width: 1px;
 	height: 1px;
@@ -96,6 +97,7 @@ h1 {
 }
 
 .preview-image.is-visible {
+	/* JavaScript가 is-visible 클래스를 붙이면 미리보기 이미지가 보인다. */
 	display: block;
 }
 
@@ -178,6 +180,7 @@ h1 {
 }
 
 @media (max-width: 560px) {
+	/* 화면이 좁을 때는 여백과 결과 목록 배치를 줄인다. */
 	.page {
 		padding: 20px 12px;
 	}
