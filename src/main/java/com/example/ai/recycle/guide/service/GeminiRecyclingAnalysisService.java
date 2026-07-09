@@ -2,8 +2,6 @@ package com.example.ai.recycle.guide.service;
 
 import com.example.ai.recycle.guide.domain.RecyclingAnalysis;
 import com.example.ai.recycle.guide.service.dto.GeminiAnalysisResponseDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.genai.Client;
 import com.google.genai.types.Content;
 import com.google.genai.types.GenerateContentConfig;
@@ -14,6 +12,8 @@ import java.util.Locale;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 @Service
 public class GeminiRecyclingAnalysisService implements RecyclingAnalysisService {
@@ -91,7 +91,7 @@ public class GeminiRecyclingAnalysisService implements RecyclingAnalysisService 
 		try {
 			GeminiAnalysisResponseDto responseDto = objectMapper.readValue(responseText, GeminiAnalysisResponseDto.class);
 			return responseDto.toDomain();
-		} catch (JsonProcessingException e) {
+		} catch (JacksonException e) {
 			throw new IllegalStateException("Gemini 응답을 JSON으로 해석할 수 없습니다.", e);
 		}
 	}
